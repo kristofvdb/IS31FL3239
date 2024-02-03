@@ -52,24 +52,27 @@ uint8_t IR = 136;                 // set global red current maximum from 0 - 255
 uint8_t IG = 128;                 // set global green current maximum from 0 - 255
 uint8_t IB = 128;                 // set global blue current maximum from 0 - 255
 
-IS31FL3246A IS31FL3246A(&i2c_0); // instantiate IS31FL3246A class
+IS31FL3246A IS31FL3246A(&i2c_0, 0); // instantiate IS31FL3246A class
 
 void setup() {
   Serial.begin(115200);
-  Serial. blockOnOverrun(false);
-  delay(4000);
-  
-  I2C_BUS.begin();                // Set master mode, default on SDA/SCL for STM32L4
-  I2C_BUS.setClock(400000);       // I2C frequency at 400 kHz
+  //Serial. blockOnOverrun(false);
   delay(1000);
   
-  Serial.println("Scan for I2C devices:");
+  I2C_BUS.begin(6,7);                // Set master mode, default on SDA/SCL for STM32L4
+  //I2C_BUS.begin(3,2);                // Set master mode, default on SDA/SCL for STM32L4
+
+  I2C_BUS.setClock(40000);       // I2C frequency at 400 kHz
+  delay(1000);
+  
+  printf("Scan for I2C devices:");
   i2c_0.I2Cscan();                // should detect IS31FL3246 at 0x30
   delay(1000);
 
-  IS31FL3246A.mode(resolution, frequency, ledMode); // set PWM frequency and output resolution and led mode
-  IS31FL3246A.setGlobalCurrent(IR, IG, IB);
-  Serial.println("End of Setup!");
+  //S31FL3246A.mode(resolution, frequency, ledMode); // set PWM frequency and output resolution and led mode
+  //IS31FL3246A.setGlobalCurrent(IR, IG, IB);
+  printf("End of Setup!\n");
+  //delay(1000);
 
 } /* end of Setup */
 
@@ -77,8 +80,8 @@ void loop() {
 
   IS31FL3246A.enable();
   
-  // Turn on leds slowly from 1 to 36 one at a time at 1/4 intensity
-  for(uint8_t ii = 1; ii <= 36; ii++)
+  // Turn on leds slowly from 1 to 24 one at a time at 1/4 intensity
+  for(uint8_t ii = 1; ii <= 24; ii++)
   {
     IS31FL3246A.setHFPWM(ii, HFPandLFP, 0, 0x64); //
 
@@ -92,7 +95,7 @@ void loop() {
   allLEDOff();
   IS31FL3246A.disable();
   delay(1000);
-  Serial.println("End of individual led function test!");
+  printf("End of individual led function test!");
 
 
   // Color test
@@ -116,7 +119,7 @@ void loop() {
   allLEDOff();
   IS31FL3246A.disable();
   delay(1000);
-  Serial.println("End of color test!");
+  printf("End of color test!");
 
 
   // led breathing mode test
@@ -142,7 +145,7 @@ void loop() {
   allLEDOff();
   IS31FL3246A.disable();
   delay(1000);
-  Serial.println("End of breathing mode test!");
+  printf("End of breathing mode test!");
 
 
   IS31FL3246A.enable();
@@ -165,7 +168,7 @@ void loop() {
   allLEDOff();
   IS31FL3246A.disable();
   delay(1000);
-  Serial.println("End of individual fade test!");
+  printf("End of individual fade test!");
 
   
   // ISSI demo test
@@ -176,7 +179,7 @@ void loop() {
   allLEDOff();
   IS31FL3246A.disable();
   delay(1000);
-  Serial.println("End of ISSI Demo test!");
+  printf("End of ISSI Demo test!");
 
 
   // white comet growing in intensity test
@@ -226,7 +229,7 @@ void loop() {
  
   IS31FL3246A.disable();
   delay(1000);
-  Serial.println("End of white comet test!");
+  printf("End of white comet test!");
   
 
   // Color wheel test
@@ -259,7 +262,7 @@ void loop() {
   allLEDOff();
   IS31FL3246A.disable();
   delay(1000);
-  Serial.println("End of color wheel test!");
+  printf("End of color wheel test!");
 
 } // end of main loop //
 

@@ -52,6 +52,7 @@ uint8_t I2Cdev::readByte(uint8_t address, uint8_t subAddress)
   _i2c_bus->beginTransmission(address);         // Initialize the Tx buffer
   _i2c_bus->write(subAddress);                  // Put slave register address in Tx buffer
   _i2c_bus->endTransmission(false);             // Send the Tx buffer, but send a restart to keep connection alive
+  //_i2c_bus->beginTransmission(address);
   _i2c_bus->requestFrom(address, 1);            // Read one byte from slave register address  
   data = _i2c_bus->read();                      // Fill Rx buffer with result
   return data;                                  // Return data read from slave register
@@ -89,6 +90,7 @@ void I2Cdev::readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8
 */
 void I2Cdev::writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data)
 {
+  printf("I2Cdev::writeByte addr 0x%02x, reg 0x%02x, data 0x%02x\n", devAddr, regAddr, data);
   _i2c_bus->beginTransmission(devAddr);  // Initialize the Tx buffer
   _i2c_bus->write(regAddr);           // Put slave register address in Tx buffer
   _i2c_bus->write(data);                 // Put data in Tx buffer
@@ -139,7 +141,7 @@ void I2Cdev::I2Cscan()
   byte error, address;
   int nDevices;
 
-  Serial.println("Scanning...");
+  printf("\nScanning...\n");
 
   nDevices = 0;
   for(address = 1; address < 127; address++ ) 
@@ -150,23 +152,21 @@ void I2Cdev::I2Cscan()
 
     if (error == 0)
     {
-      Serial.print("I2C device found at address 0x");
-      if (address<16) 
-      Serial.print("0");
-      Serial.print(address,HEX);
-      Serial.println("  !");
+      printf("I2C device found at address 0x");
+      printf("%0x",address);
+      printf("!\n");
       nDevices++;
     }
     else if (error==4) 
     {
-      Serial.print("Unknown error at address 0x");
+      printf("Unknown error at address 0x");
       if (address<16) 
-        Serial.print("0");
-      Serial.println(address,HEX);
+        printf("0");
+      printf("%x",address);
     }    
   }
   if (nDevices == 0)
-    Serial.println("No I2C devices found\n");
+    printf("No I2C devices found\n");
   else
-    Serial.println("I2C scan complete\n");
+    printf("I2C scan complete\n");
 }

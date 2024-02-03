@@ -138,7 +138,7 @@
 #define IS31FL3246A_PH_DLY     0x71
 #define IS31FL3246A_RESET      0x72
 
-#define IS31FL3246A_ADDRESS    0x30 // when AD = LOW (default)
+#define IS31FL3246A_ADDRESS    0x28 // when AD = LOW (default)
 
 #define HF_32kHz  0x00 // HF frequency selections
 #define HF_64kHz  0x01
@@ -158,10 +158,11 @@
 class IS31FL3246A
 {
   public: 
-  IS31FL3246A(I2Cdev* i2c_bus);
+  IS31FL3246A(I2Cdev* i2c_bus, uint8_t addr);
   void reset();
   void disable();
   void enable();
+  void allLedOn(uint8_t addr, uint8_t value);
   void mode(uint8_t resolution, uint8_t frequency, uint8_t ledMode);
   void setHFPWM(uint8_t channel, uint8_t FMS, uint8_t HFPWMLevel_H, uint8_t HFPWMLevel_L);
   void setLFPWM(uint8_t channel, uint8_t PWMLevel);
@@ -169,6 +170,7 @@ class IS31FL3246A
   void PWMUpdate();
   private:
   I2Cdev* _i2c_bus;
+  uint8_t m_addr;
  };
 
 #endif
